@@ -19,6 +19,7 @@ DEFAULT_IMPORT_ORDER_STYLE = 'cryptography'
 IMPORT_FUTURE = 0
 IMPORT_STDLIB = 10
 IMPORT_3RD_PARTY = 20
+IMPORT_3RD_PARTY_LOCAL = 25
 IMPORT_APP = 30
 IMPORT_APP_RELATIVE = 40
 IMPORT_MIXED = -1
@@ -81,6 +82,9 @@ class ImportVisitor(ast.NodeVisitor):
 
         self.application_import_names = set(
             self.options.get("application_import_names", [])
+        )
+        self.application_local_third_parties = set(
+            self.options.get("application_local_third_parties", [])
         )
         self.style = self.options['import_order_style']
 
@@ -189,6 +193,9 @@ class ImportVisitor(ast.NodeVisitor):
 
         elif pkg in STDLIB_NAMES:
             return IMPORT_STDLIB
+
+        elif pkg in self.application_local_third_parties:
+            return IMPORT_3RD_PARTY_LOCAL
 
         else:
             # Not future, stdlib or an application import.

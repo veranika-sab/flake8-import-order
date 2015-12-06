@@ -28,17 +28,25 @@ class Linter(ImportOrderChecker):
             type="string",
             help="Style to follow. Available: cryptography, google"
         )
+        parser.add_option(
+            "--application-local-third-parties",
+            default="",
+            action="store",
+            type="string",
+            help="Import names to consider as local third parties applications"
+        )
         parser.config_options.append("application-import-names")
         parser.config_options.append("import-order-style")
+        parser.config_options.append("application-local-third-parties")
 
     @classmethod
     def parse_options(cls, options):
-        optdict = {}
-
         names = options.application_import_names.split(",")
+        local_third_parties = options.application_local_third_parties.split(",")
         optdict = dict(
             application_import_names=[n.strip() for n in names],
             import_order_style=options.import_order_style,
+            application_local_third_parties=[n.strip() for n in local_third_parties],
         )
 
         cls.options = optdict
